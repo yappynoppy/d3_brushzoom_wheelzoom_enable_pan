@@ -100,8 +100,8 @@ function brushended() {
 
   if (!s) {
     if (!idleTimeout) return (idleTimeout = setTimeout(idled, idleDelay));
-    x.domain(x0);
-    y.domain(y0);
+    newX = x.domain(x0);
+    newY = y.domain(y0);
   } else {
     newX = x.domain([s[0][0], s[1][0]].map(x.invert, x));
     newY = y.domain([s[1][1], s[0][1]].map(y.invert, y));
@@ -163,7 +163,7 @@ d3.csv(
 function reset_zoom(){
   x.domain(x0);
   y.domain(y0);
-  
+
   SVG.transition()
       .duration(750)
       .call(zoom.transform, d3.zoomIdentity);
