@@ -1,3 +1,13 @@
+var checkbox = document.querySelector('#brush');
+
+checkbox.addEventListener( 'change', function() {
+    if(this.checked) {
+      start_brush_tool()// Checkbox is checked..
+    } else {
+      end_brush_tool()// Checkbox is not checked..
+    }
+});
+
 // set the dimensions and margins of the graph
 var margin = { top: 10, right: 30, bottom: 30, left: 60 },
   width = 460 - margin.left - margin.right,
@@ -167,7 +177,7 @@ d3.csv(
 function reset_zoom(){
   newX = x.domain(x0);
   newY = y.domain(y0);
-  
+
   updateChart(newX, newY);
   
 };

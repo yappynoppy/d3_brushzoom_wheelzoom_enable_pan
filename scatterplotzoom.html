@@ -1,14 +1,20 @@
 <!DOCTYPE html>
 <meta charset="utf-8">
+<style>
+    input {
+        font-size: 12px;
+    }
+</style>
 
 <!-- Load d3.js -->
 <script src="http://d3js.org/d3.v4.js"></script>
 
-<input type="button" value="brush" onclick="start_brush_tool()">
-<input type="button" value="zoom" onclick="end_brush_tool()">
+<input id="brush" type="checkbox">brush
 <input type="button" value="reset" onclick="reset_zoom()">
 
 <!-- Create a div where the circle will take place -->
 <div id="dataviz_axisZoom"></div>
 
 <script src="scatterplotzoom.js"></script>
+
+
