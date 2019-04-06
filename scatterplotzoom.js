@@ -43,6 +43,9 @@ var y = d3
   .domain(y0)
   .range([height, 0]);
 
+var newX = null;
+var newY = null;
+
 var brush = d3
     .brush()
     .extent([[0, 0], [width, height]])
@@ -52,11 +55,16 @@ var brush = d3
 
 // Add X axis
 var xAxis = SVG.append("g")
+  .attr("class", "x axis")
+  .attr("id", "axis--x")
   .attr("transform", "translate(0," + height + ")")
   .call(d3.axisBottom(x));
 
 // Add Y axis
-var yAxis = SVG.append("g").call(d3.axisLeft(y));
+var yAxis = SVG.append("g")
+  .attr("class", "y axis")
+  .attr("id", "axis--y")
+  .call(d3.axisLeft(y));
 
 // Add a clipPath: everything out of this area won't be drawn.
 var clip = SVG.append("defs")
@@ -94,8 +102,8 @@ function updateChart(newX, newY) {
 // A function that updates the chart when the user zoom and thus new boundaries are available
 function zoomed() {
   // recover the new scale
-  var newX = d3.event.transform.rescaleX(x);
-  var newY = d3.event.transform.rescaleY(y);
+  newX = d3.event.transform.rescaleX(x);
+  newY = d3.event.transform.rescaleY(y);
 
   // update axes with these new boundaries
   xAxis.call(d3.axisBottom(newX));
@@ -118,8 +126,6 @@ function idled() {
 
 function brushended() {
   var s = d3.event.selection;
-  var newX = null;
-  var newY = null;
 
   if (!s) {
     if (!idleTimeout) return (idleTimeout = setTimeout(idled, idleDelay));
@@ -213,6 +219,11 @@ d3.csv(
       .on("mouseout", tipMouseout);
   }
 );
+
+/*function zoomEndFunction(){
+  x = newX;
+  y = newY;
+}*/
 
 // This add an invisible rect on top of the chart area. This rect can recover pointer events: necessary to understand when the user zoom
 //d3.select("#dataviz_axisZoom")
