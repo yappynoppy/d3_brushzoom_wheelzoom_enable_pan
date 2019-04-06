@@ -55,7 +55,7 @@ var zoom = d3
   .zoom()
   //.scaleExtent([0.5, 20]) // This control how much you can unzoom (x0.5) and zoom (x20)
   //.extent([[0, 0], [width, height]])
-  .on("zoom", updateChart);
+  .on("zoom", zoomed);
 
 // This add an invisible rect on top of the chart area. This rect can recover pointer events: necessary to understand when the user zoom
 SVG.append("rect")
@@ -66,27 +66,46 @@ SVG.append("rect")
   .attr("transform", "translate(" + margin.left + "," + margin.top + ")")
   .call(zoom);
 
-// now the user can zoom and it will trigger the function called updateChart
-
-// A function that updates the chart when the user zoom and thus new boundaries are available
-function updateChart() {
-  // recover the new scale
-  var newX = d3.event.transform.rescaleX(x);
-  var newY = d3.event.transform.rescaleY(y);
+function updateChart(newX, newY){
+  var t = SVG.transition().duration(750);
 
   // update axes with these new boundaries
-  xAxis.call(d3.axisBottom(newX));
-  yAxis.call(d3.axisLeft(newY));
+  xAxis.transition(t).call(d3.axisBottom(newX));
+  yAxis.transition(t).call(d3.axisLeft(newY));
 
   // update circle position
   scatter
     .selectAll("circle")
+    .transition(t)
     .attr("cx", function(d) {
       return newX(d.Sepal_Length);
     })
     .attr("cy", function(d) {
       return newY(d.Petal_Length);
     });
+}
+
+// now the user can zoom and it will trigger the function called updateChart
+// A function that updates the chart when the user zoom and thus new boundaries are available
+function zoomed() {
+  // recover the new scale
+  var newX = d3.event.transform.rescaleX(x);
+  var newY = d3.event.transform.rescaleY(y); 
+  
+      // update axes with these new boundaries
+      xAxis.call(d3.axisBottom(newX));
+      yAxis.call(d3.axisLeft(newY));
+    
+      // update circle position
+      scatter
+        .selectAll("circle")
+        .attr("cx", function(d) {
+          return newX(d.Sepal_Length);
+        })
+        .attr("cy", function(d) {
+          return newY(d.Petal_Length);
+        });
+
 }
 
 function idled() {
@@ -107,22 +126,7 @@ function brushended() {
     newY = y.domain([s[1][1], s[0][1]].map(y.invert, y));
     SVG.select(".brush").call(brush.move, null);
   }
-  var t = SVG.transition().duration(750);
-
-  // update axes with these new boundaries
-  xAxis.transition(t).call(d3.axisBottom(newX));
-  yAxis.transition(t).call(d3.axisLeft(newY));
-
-  // update circle position
-  scatter
-    .selectAll("circle")
-    .transition(t)
-    .attr("cx", function(d) {
-      return newX(d.Sepal_Length);
-    })
-    .attr("cy", function(d) {
-      return newY(d.Petal_Length);
-    });
+  updateChart(newX, newY);
 }
 
 function end_brush_tool() {
@@ -161,10 +165,9 @@ d3.csv(
 );
 
 function reset_zoom(){
-  x.domain(x0);
-  y.domain(y0);
-
-  SVG.transition()
-      .duration(750)
-      .call(zoom.transform, d3.zoomIdentity);
+  newX = x.domain(x0);
+  newY = y.domain(y0);
+  
+  updateChart(newX, newY);
+  
 };
