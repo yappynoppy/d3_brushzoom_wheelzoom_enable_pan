@@ -53,8 +53,8 @@ var scatter = SVG.append("g").attr("clip-path", "url(#clip)");
 // Set the zoom and Pan features: how much you can zoom, on which part, and what to do when there is a zoom
 var zoom = d3
   .zoom()
-  .scaleExtent([0.5, 20]) // This control how much you can unzoom (x0.5) and zoom (x20)
-  .extent([[0, 0], [width, height]])
+  //.scaleExtent([0.5, 20]) // This control how much you can unzoom (x0.5) and zoom (x20)
+  //.extent([[0, 0], [width, height]])
   .on("zoom", updateChart);
 
 // This add an invisible rect on top of the chart area. This rect can recover pointer events: necessary to understand when the user zoom
@@ -159,3 +159,12 @@ d3.csv(
       .style("opacity", 0.5);
   }
 );
+
+function reset_zoom(){
+  x.domain(x0);
+  y.domain(y0);
+  
+  SVG.transition()
+      .duration(750)
+      .call(zoom.transform, d3.zoomIdentity);
+};
