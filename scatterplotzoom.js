@@ -43,8 +43,8 @@ var y = d3
   .domain(y0)
   .range([height, 0]);
 
-var newX = null;
-var newY = null;
+var newX = x;
+var newY = y;
 
 var brush = d3
     .brush()
@@ -132,8 +132,8 @@ function brushended() {
     newX = x.domain(x0);
     newY = y.domain(y0);
   } else {
-    newX = x.domain([s[0][0], s[1][0]].map(x.invert));
-    newY = y.domain([s[1][1], s[0][1]].map(y.invert));
+    newX = x.domain([s[0][0], s[1][0]].map(newX.invert));
+    newY = y.domain([s[1][1], s[0][1]].map(newY.invert));
 
     SVG.select(".brush").call(brush.move, null);
   }
