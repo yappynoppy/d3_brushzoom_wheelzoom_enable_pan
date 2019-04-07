@@ -100,21 +100,21 @@ function updateChart(X, Y) {
 
 function zoomed() {
   // recover the new scale
-  var newXzoom = d3.event.transform.rescaleX(x);
-  var newYzoom = d3.event.transform.rescaleY(y);
+  newX = d3.event.transform.rescaleX(x);
+  newY = d3.event.transform.rescaleY(y);
 
   // update axes with these new boundaries
-  xAxis.call(d3.axisBottom(newXzoom));
-  yAxis.call(d3.axisLeft(newYzoom));
+  xAxis.call(d3.axisBottom(newX));
+  yAxis.call(d3.axisLeft(newY));
 
   // update circle position
   scatter
     .selectAll('circle')
     .attr('cx', function(d) {
-      return newXzoom(d.Sepal_Length);
+      return newX(d.Sepal_Length);
     })
     .attr('cy', function(d) {
-      return newYzoom(d.Petal_Length);
+      return newY(d.Petal_Length);
     });
 }
 
@@ -192,6 +192,9 @@ var tipMouseout = function(d) {
 };
 
 function reset_zoom() {
+  newX = x.domain(x0);
+  newY = y.domain(y0);
+
   var svg = d3.select('svg');
   svg
     .transition()
