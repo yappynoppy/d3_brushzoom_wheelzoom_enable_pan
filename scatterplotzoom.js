@@ -131,8 +131,8 @@ function brushended() {
 
   if (s && sourceEvent.type === 'mouseup') {
     changeScaleExtent(
-      width / (s[1][0] - s[0][0]),
-      height / (s[0][1] - s[1][1])
+      width / Math.abs(s[1][0] - s[0][0]),
+      height / Math.abs(s[0][1] - s[1][1])
     );
 
     newX = x.domain([s[0][0], s[1][0]].map(newX.invert));
@@ -205,6 +205,8 @@ var tipMouseout = function(d) {
 };
 
 function reset_zoom() {
+  changeScaleExtent(1, 1);
+
   newX = x.domain(x0);
   newY = y.domain(y0);
 
@@ -213,7 +215,7 @@ function reset_zoom() {
 
 function changeScaleExtent(widthExtent, heightExtent) {
   var extent = widthExtent > heightExtent ? widthExtent : heightExtent;
-  console.log(extent);
+  console.log('w:' + widthExtent + ',h:' + heightExtent + ',e:' + extent);
   zoom = d3
     .zoom()
     .scaleExtent([1 / extent, Infinity]) // This control how much you can unzoom (x0.5) and zoom (x20)
