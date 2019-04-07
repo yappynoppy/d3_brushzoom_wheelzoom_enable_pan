@@ -199,7 +199,12 @@ function reset_zoom() {
   newX = x.domain(x0);
   newY = y.domain(y0);
 
-  updateChart(newX, newY);
+  //updateChart(newX, newY);
+  svg = d3.select('svg');
+  svg
+    .transition()
+    .duration(750)
+    .call(zoom.transform, d3.zoomIdentity);
 }
 
 d3.csv(
