@@ -16,7 +16,7 @@ var margin = { top: 10, right: 30, bottom: 30, left: 60 },
 // Set the zoom and Pan features: how much you can zoom, on which part, and what to do when there is a zoom
 var zoom = d3
   .zoom()
-  //.scaleExtent([1, 1]) // This control how much you can unzoom (x0.5) and zoom (x20)
+  .scaleExtent([1, Infinity]) // This control how much you can unzoom (x0.5) and zoom (x20)
   //.translateExtent([[-100, -100], [height + 100, width + 100]])
   .on("zoom", zoomed);
 
@@ -207,6 +207,15 @@ function reset_zoom() {
   newY = y.domain(y0);
 
   updateChart(newX, newY);
+}
+
+function changeScaleExtent(widthExtent, heightExtent){
+  var extent = widthExtent > heightExtent ? widthExtent : heightExtent;
+
+    zoom = d3
+      .zoom()
+      .scaleExtent([1/extent, Infinity]) // This control how much you can unzoom (x0.5) and zoom (x20)
+      .on("zoom", zoomed);
 }
 
 d3.csv(
