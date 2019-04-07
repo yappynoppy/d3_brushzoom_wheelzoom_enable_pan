@@ -16,7 +16,7 @@ var margin = { top: 10, right: 30, bottom: 30, left: 60 },
 // Set the zoom and Pan features: how much you can zoom, on which part, and what to do when there is a zoom
 var zoom = d3
   .zoom()
-  .scaleExtent([1, Infinity]) // This control how much you can unzoom (x0.5) and zoom (x20)
+  //.scaleExtent([0.1, Infinity]) // This control how much you can unzoom (x0.5) and zoom (x20)
   //.translateExtent([[-100, -100], [height + 100, width + 100]])
   .on('zoom', zoomed);
 
@@ -53,8 +53,6 @@ var brush = d3
   .brush()
   .extent([[0, 0], [width, height]])
   .on('end', brushended);
-//idleTimeout,
-//idleDelay = 350;
 
 // Add X axis
 var xAxis = SVG.append('g')
@@ -122,21 +120,12 @@ function zoomed() {
       return newY(d.Petal_Length);
     });
 }
-/*
-function idled() {
-  idleTimeout = null;
-}*/
 
 function brushended() {
   var s = d3.event.selection;
   const sourceEvent = d3.event.sourceEvent;
 
   if (s && sourceEvent.type === 'mouseup') {
-    changeScaleExtent(
-      width / Math.abs(s[1][0] - s[0][0]),
-      height / Math.abs(s[0][1] - s[1][1])
-    );
-
     newX = x.domain([s[0][0], s[1][0]].map(newX.invert));
     newY = y.domain([s[1][1], s[0][1]].map(newY.invert));
 
@@ -206,40 +195,7 @@ var tipMouseout = function(d) {
     .style('opacity', 0); // don't care about position!
 };
 
-function changeScaleExtent(widthExtent, heightExtent) {
-  var newExtent = widthExtent > heightExtent ? widthExtent : heightExtent;
-  console.log(
-    'w:' +
-      widthExtent +
-      ',h:' +
-      heightExtent +
-      ',new e:' +
-      newExtent +
-      ',cur e:' +
-      currentExtent
-  );
-
-  zoom = d3
-    .zoom()
-    .scaleExtent([currentExtent / newExtent, Infinity]) // This control how much you can unzoom (x0.5) and zoom (x20)
-    .on('zoom', zoomed);
-
-  currentExtent = newExtent;
-  console.log(currentExtent);
-}
-
-function resetScaleExtent() {
-  zoom = d3
-    .zoom()
-    .scaleExtent([1, Infinity]) // This control how much you can unzoom (x0.5) and zoom (x20)
-    .on('zoom', zoomed);
-  svg = d3.select('svg');
-  svg.call(zoom);
-}
-
 function reset_zoom() {
-  resetScaleExtent();
-
   newX = x.domain(x0);
   newY = y.domain(y0);
 
