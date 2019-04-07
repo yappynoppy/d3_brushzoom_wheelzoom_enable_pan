@@ -29,8 +29,6 @@ var SVG = d3
   .append('g')
   .attr('transform', 'translate(' + margin.left + ',' + margin.top + ')');
 
-enableZoom();
-
 var x0 = [4, 8];
 var y0 = [0, 9];
 
@@ -46,8 +44,6 @@ var y = d3
 
 var newX = x;
 var newY = y;
-
-var currentExtent = 1;
 
 var brush = d3
   .brush()
@@ -80,6 +76,9 @@ var clip = SVG.append('defs')
 // Create the scatter variable: where both the circles and the brush take place
 var scatter = SVG.append('g').attr('clip-path', 'url(#clip)');
 
+// now the user can zoom and it will trigger the function called updateChart
+// A function that updates the chart when the user zoom and thus new boundaries are available
+
 function updateChart(X, Y) {
   var t = SVG.transition().duration(750);
 
@@ -99,25 +98,23 @@ function updateChart(X, Y) {
     });
 }
 
-// now the user can zoom and it will trigger the function called updateChart
-// A function that updates the chart when the user zoom and thus new boundaries are available
 function zoomed() {
   // recover the new scale
-  newX = d3.event.transform.rescaleX(x);
-  newY = d3.event.transform.rescaleY(y);
+  var newXzoom = d3.event.transform.rescaleX(x);
+  var newYzoom = d3.event.transform.rescaleY(y);
 
   // update axes with these new boundaries
-  xAxis.call(d3.axisBottom(newX));
-  yAxis.call(d3.axisLeft(newY));
+  xAxis.call(d3.axisBottom(newXzoom));
+  yAxis.call(d3.axisLeft(newYzoom));
 
   // update circle position
   scatter
     .selectAll('circle')
     .attr('cx', function(d) {
-      return newX(d.Sepal_Length);
+      return newXzoom(d.Sepal_Length);
     })
     .attr('cy', function(d) {
-      return newY(d.Petal_Length);
+      return newYzoom(d.Petal_Length);
     });
 }
 
@@ -167,7 +164,6 @@ var tooltip = d3
 
 // tooltip mouseover event handler
 var tipMouseover = function(d) {
-  //var color = colorScale(d.manufacturer);
   var html =
     'Sepal_Length ' +
     '<b>' +
@@ -196,11 +192,7 @@ var tipMouseout = function(d) {
 };
 
 function reset_zoom() {
-  newX = x.domain(x0);
-  newY = y.domain(y0);
-
-  //updateChart(newX, newY);
-  svg = d3.select('svg');
+  var svg = d3.select('svg');
   svg
     .transition()
     .duration(750)
@@ -227,5 +219,7 @@ d3.csv(
       .style('opacity', 0.5)
       .on('mouseover', tipMouseover)
       .on('mouseout', tipMouseout);
+
+    enableZoom();
   }
 );
