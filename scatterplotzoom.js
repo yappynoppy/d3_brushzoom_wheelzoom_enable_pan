@@ -2,9 +2,9 @@ var checkbox = document.querySelector("#brush");
 
 checkbox.addEventListener("change", function() {
   if (this.checked) {
-    start_brush_tool(); // Checkbox is checked..
+    enableBrush(); // Checkbox is checked..
   } else {
-    end_brush_tool(); // Checkbox is not checked..
+    disableBrush(); // Checkbox is not checked..
   }
 });
 
@@ -26,9 +26,10 @@ var SVG = d3
   .append("svg")
   .attr("width", width + margin.left + margin.right)
   .attr("height", height + margin.top + margin.bottom)
-  .call(zoom)
   .append("g")
   .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
+
+enableZoom();
 
 var x0 = [4, 8];
 var y0 = [0, 9];
@@ -49,9 +50,9 @@ var newY = y;
 var brush = d3
     .brush()
     .extent([[0, 0], [width, height]])
-    .on("end", brushended),
-  idleTimeout,
-  idleDelay = 350;
+    .on("end", brushended);
+  //idleTimeout,
+  //idleDelay = 350;
 
 // Add X axis
 var xAxis = SVG.append("g")
@@ -79,22 +80,22 @@ var clip = SVG.append("defs")
 // Create the scatter variable: where both the circles and the brush take place
 var scatter = SVG.append("g").attr("clip-path", "url(#clip)");
 
-function updateChart(newX, newY) {
+function updateChart(X, Y) {
   var t = SVG.transition().duration(750);
 
   // update axes with these new boundaries
-  xAxis.transition(t).call(d3.axisBottom(newX));
-  yAxis.transition(t).call(d3.axisLeft(newY));
+  xAxis.transition(t).call(d3.axisBottom(X));
+  yAxis.transition(t).call(d3.axisLeft(Y));
 
   // update circle position
   scatter
     .selectAll("circle")
     .transition(t)
     .attr("cx", function(d) {
-      return newX(d.Sepal_Length);
+      return X(d.Sepal_Length);
     })
     .attr("cy", function(d) {
-      return newY(d.Petal_Length);
+      return Y(d.Petal_Length);
     });
 }
 
@@ -119,39 +120,50 @@ function zoomed() {
       return newY(d.Petal_Length);
     });
 }
-
+/*
 function idled() {
   idleTimeout = null;
-}
+}*/
 
 function brushended() {
   var s = d3.event.selection;
+  const sourceEvent = d3.event.sourceEvent;
 
-  if (!s) {
-    if (!idleTimeout) return (idleTimeout = setTimeout(idled, idleDelay));
-    newX = x.domain(x0);
-    newY = y.domain(y0);
-  } else {
+  if (s && sourceEvent.type === 'mouseup') {
+    
     newX = x.domain([s[0][0], s[1][0]].map(newX.invert));
     newY = y.domain([s[1][1], s[0][1]].map(newY.invert));
 
     SVG.select(".brush").call(brush.move, null);
+  
+    updateChart(newX, newY);
   }
-  updateChart(newX, newY);
+
 }
 
-function end_brush_tool() {
-  SVG.selectAll("g.brush").remove();
+function enableZoom() {
+  svg = d3.select('svg');
+  svg.call(zoom);
 }
 
-function start_brush_tool() {
+function disableZoom() {
+  svg = d3.select('svg');
+  svg.on('.zoom', null);
+}
+
+
+function enableBrush() {
+  disableZoom();
+
   SVG.append("g")
     .attr("class", "brush")
     .call(brush);
 }
 
-function end_brush_tool() {
+function disableBrush() {
   SVG.selectAll("g.brush").remove();
+  
+  enableZoom();
 }
 
 var tooltip = d3
@@ -220,19 +232,3 @@ d3.csv(
   }
 );
 
-/*function zoomEndFunction(){
-  x = newX;
-  y = newY;
-}*/
-
-// This add an invisible rect on top of the chart area. This rect can recover pointer events: necessary to understand when the user zoom
-//d3.select("#dataviz_axisZoom")
-/*SVG.append("rect")
-  .attr("width", width)
-  .attr("height", height)
-  .style("fill", "none")
-  .style("pointer-events", "all")
-  //.attr("transform", "translate(" + margin.left + "," + margin.top + ")")
-  .call(zoom);*/
-
-//SVG.call(zoom);
