@@ -204,15 +204,6 @@ var tipMouseout = function(d) {
     .style('opacity', 0); // don't care about position!
 };
 
-function reset_zoom() {
-  changeScaleExtent(1, 1);
-
-  newX = x.domain(x0);
-  newY = y.domain(y0);
-
-  updateChart(newX, newY);
-}
-
 function changeScaleExtent(widthExtent, heightExtent) {
   var extent = widthExtent > heightExtent ? widthExtent : heightExtent;
   console.log('w:' + widthExtent + ',h:' + heightExtent + ',e:' + extent);
@@ -220,6 +211,22 @@ function changeScaleExtent(widthExtent, heightExtent) {
     .zoom()
     .scaleExtent([1 / extent, Infinity]) // This control how much you can unzoom (x0.5) and zoom (x20)
     .on('zoom', zoomed);
+}
+
+function resetScaleExtent() {
+  zoom = d3
+    .zoom()
+    .scaleExtent([1, Infinity]) // This control how much you can unzoom (x0.5) and zoom (x20)
+    .on('zoom', zoomed);
+}
+
+function reset_zoom() {
+  resetScaleExtent(1, 1);
+
+  newX = x.domain(x0);
+  newY = y.domain(y0);
+
+  updateChart(newX, newY);
 }
 
 d3.csv(
