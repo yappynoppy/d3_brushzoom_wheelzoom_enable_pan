@@ -215,7 +215,7 @@ function changeScaleExtent(widthExtent, heightExtent) {
       heightExtent +
       ',new e:' +
       newExtent +
-      ',cur e' +
+      ',cur e:' +
       currentExtent
   );
 
@@ -224,7 +224,8 @@ function changeScaleExtent(widthExtent, heightExtent) {
     .scaleExtent([currentExtent / newExtent, Infinity]) // This control how much you can unzoom (x0.5) and zoom (x20)
     .on('zoom', zoomed);
 
-  console.log(d3.zoomTransform(d3.select('svg')).k);
+  currentExtent = newExtent;
+  console.log(currentExtent);
 }
 
 function resetScaleExtent() {
