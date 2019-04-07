@@ -218,10 +218,12 @@ function resetScaleExtent() {
     .zoom()
     .scaleExtent([1, Infinity]) // This control how much you can unzoom (x0.5) and zoom (x20)
     .on('zoom', zoomed);
+  svg = d3.select('svg');
+  svg.call(zoom);
 }
 
 function reset_zoom() {
-  resetScaleExtent(1, 1);
+  resetScaleExtent();
 
   newX = x.domain(x0);
   newY = y.domain(y0);
