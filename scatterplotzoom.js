@@ -1,6 +1,6 @@
-var checkbox = document.querySelector("#brush");
+var checkbox = document.querySelector('#brush');
 
-checkbox.addEventListener("change", function() {
+checkbox.addEventListener('change', function() {
   if (this.checked) {
     enableBrush(); // Checkbox is checked..
   } else {
@@ -18,16 +18,16 @@ var zoom = d3
   .zoom()
   .scaleExtent([1, Infinity]) // This control how much you can unzoom (x0.5) and zoom (x20)
   //.translateExtent([[-100, -100], [height + 100, width + 100]])
-  .on("zoom", zoomed);
+  .on('zoom', zoomed);
 
 // append the SVG object to the body of the page
 var SVG = d3
-  .select("#dataviz_axisZoom")
-  .append("svg")
-  .attr("width", width + margin.left + margin.right)
-  .attr("height", height + margin.top + margin.bottom)
-  .append("g")
-  .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
+  .select('#dataviz_axisZoom')
+  .append('svg')
+  .attr('width', width + margin.left + margin.right)
+  .attr('height', height + margin.top + margin.bottom)
+  .append('g')
+  .attr('transform', 'translate(' + margin.left + ',' + margin.top + ')');
 
 enableZoom();
 
@@ -48,37 +48,37 @@ var newX = x;
 var newY = y;
 
 var brush = d3
-    .brush()
-    .extent([[0, 0], [width, height]])
-    .on("end", brushended);
-  //idleTimeout,
-  //idleDelay = 350;
+  .brush()
+  .extent([[0, 0], [width, height]])
+  .on('end', brushended);
+//idleTimeout,
+//idleDelay = 350;
 
 // Add X axis
-var xAxis = SVG.append("g")
-  .attr("class", "x axis")
-  .attr("id", "axis--x")
-  .attr("transform", "translate(0," + height + ")")
+var xAxis = SVG.append('g')
+  .attr('class', 'x axis')
+  .attr('id', 'axis--x')
+  .attr('transform', 'translate(0,' + height + ')')
   .call(d3.axisBottom(x));
 
 // Add Y axis
-var yAxis = SVG.append("g")
-  .attr("class", "y axis")
-  .attr("id", "axis--y")
+var yAxis = SVG.append('g')
+  .attr('class', 'y axis')
+  .attr('id', 'axis--y')
   .call(d3.axisLeft(y));
 
 // Add a clipPath: everything out of this area won't be drawn.
-var clip = SVG.append("defs")
-  .append("SVG:clipPath")
-  .attr("id", "clip")
-  .append("SVG:rect")
-  .attr("width", width)
-  .attr("height", height)
-  .attr("x", 0)
-  .attr("y", 0);
+var clip = SVG.append('defs')
+  .append('SVG:clipPath')
+  .attr('id', 'clip')
+  .append('SVG:rect')
+  .attr('width', width)
+  .attr('height', height)
+  .attr('x', 0)
+  .attr('y', 0);
 
 // Create the scatter variable: where both the circles and the brush take place
-var scatter = SVG.append("g").attr("clip-path", "url(#clip)");
+var scatter = SVG.append('g').attr('clip-path', 'url(#clip)');
 
 function updateChart(X, Y) {
   var t = SVG.transition().duration(750);
@@ -89,12 +89,12 @@ function updateChart(X, Y) {
 
   // update circle position
   scatter
-    .selectAll("circle")
+    .selectAll('circle')
     .transition(t)
-    .attr("cx", function(d) {
+    .attr('cx', function(d) {
       return X(d.Sepal_Length);
     })
-    .attr("cy", function(d) {
+    .attr('cy', function(d) {
       return Y(d.Petal_Length);
     });
 }
@@ -112,11 +112,11 @@ function zoomed() {
 
   // update circle position
   scatter
-    .selectAll("circle")
-    .attr("cx", function(d) {
+    .selectAll('circle')
+    .attr('cx', function(d) {
       return newX(d.Sepal_Length);
     })
-    .attr("cy", function(d) {
+    .attr('cy', function(d) {
       return newY(d.Petal_Length);
     });
 }
@@ -130,15 +130,13 @@ function brushended() {
   const sourceEvent = d3.event.sourceEvent;
 
   if (s && sourceEvent.type === 'mouseup') {
-    
     newX = x.domain([s[0][0], s[1][0]].map(newX.invert));
     newY = y.domain([s[1][1], s[0][1]].map(newY.invert));
 
-    SVG.select(".brush").call(brush.move, null);
-  
+    SVG.select('.brush').call(brush.move, null);
+
     updateChart(newX, newY);
   }
-
 }
 
 function enableZoom() {
@@ -151,55 +149,54 @@ function disableZoom() {
   svg.on('.zoom', null);
 }
 
-
 function enableBrush() {
   disableZoom();
 
-  SVG.append("g")
-    .attr("class", "brush")
+  SVG.append('g')
+    .attr('class', 'brush')
     .call(brush);
 }
 
 function disableBrush() {
-  SVG.selectAll("g.brush").remove();
-  
+  SVG.selectAll('g.brush').remove();
+
   enableZoom();
 }
 
 var tooltip = d3
-  .select("#dataviz_axisZoom")
-  .append("div")
-  .attr("class", "tooltip")
-  .style("opacity", 0);
+  .select('#dataviz_axisZoom')
+  .append('div')
+  .attr('class', 'tooltip')
+  .style('opacity', 0);
 
 // tooltip mouseover event handler
 var tipMouseover = function(d) {
   //var color = colorScale(d.manufacturer);
   var html =
-    "Sepal_Length " +
-    "<b>" +
+    'Sepal_Length ' +
+    '<b>' +
     d.Sepal_Length +
-    "</b>" +
-    "<br>" +
-    "Petal_Length " +
-    "<b>" +
+    '</b>' +
+    '<br>' +
+    'Petal_Length ' +
+    '<b>' +
     d.Petal_Length +
-    "</b>";
+    '</b>';
 
   tooltip
     .html(html)
-    .style("left", d3.event.pageX + 15 + "px")
-    .style("top", d3.event.pageY - 28 + "px")
+    .style('left', d3.event.pageX + 15 + 'px')
+    .style('top', d3.event.pageY - 28 + 'px')
     .transition()
     .duration(200) // ms
-    .style("opacity", 0.9); // started as 0!
+    .style('opacity', 0.9); // started as 0!
 };
 // tooltip mouseout event handler
 var tipMouseout = function(d) {
   tooltip
     .transition()
     .duration(300) // ms
-    .style("opacity", 0); // don't care about position!
+    .style('opacity', 0); // don't care about position!
 };
 
 function reset_zoom() {
@@ -209,35 +206,34 @@ function reset_zoom() {
   updateChart(newX, newY);
 }
 
-function changeScaleExtent(widthExtent, heightExtent){
+function changeScaleExtent(widthExtent, heightExtent) {
   var extent = widthExtent > heightExtent ? widthExtent : heightExtent;
 
-    zoom = d3
-      .zoom()
-      .scaleExtent([1/extent, Infinity]) // This control how much you can unzoom (x0.5) and zoom (x20)
-      .on("zoom", zoomed);
+  zoom = d3
+    .zoom()
+    .scaleExtent([1 / extent, Infinity]) // This control how much you can unzoom (x0.5) and zoom (x20)
+    .on('zoom', zoomed);
 }
 
 d3.csv(
-  "https://raw.githubusercontent.com/holtzy/D3-graph-gallery/master/DATA/iris.csv",
+  'https://raw.githubusercontent.com/holtzy/D3-graph-gallery/master/DATA/iris.csv',
   function(data) {
     // Add circles
     scatter
-      .selectAll("circle")
+      .selectAll('circle')
       .data(data)
       .enter()
-      .append("circle")
-      .attr("cx", function(d) {
+      .append('circle')
+      .attr('cx', function(d) {
         return x(d.Sepal_Length);
       })
-      .attr("cy", function(d) {
+      .attr('cy', function(d) {
         return y(d.Petal_Length);
       })
-      .attr("r", 8)
-      .style("fill", "#61a3a9")
-      .style("opacity", 0.5)
-      .on("mouseover", tipMouseover)
-      .on("mouseout", tipMouseout);
+      .attr('r', 8)
+      .style('fill', '#61a3a9')
+      .style('opacity', 0.5)
+      .on('mouseover', tipMouseover)
+      .on('mouseout', tipMouseout);
   }
 );
-

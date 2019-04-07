@@ -1,0 +1,32 @@
+{
+  "name": "d3_brushzoom_wheelzoom_enable_pan",
+  "version": "1.0.0",
+  "description": "d3 v4   brush zoom & mouse wheel zoom a scatter plot with axis.   This graph can be panned.",
+  "main": "scatterplotzoom.js",
+  "scripts": {
+    "precommit": "lint-staged"
+  },
+  "lint-staged": {
+    "*.{js,json,css,md}": [
+      "prettier --write --single-quote=true",
+      "git add"
+    ]
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/yappynoppy/d3_brushzoom_wheelzoom_enable_pan.git"
+  },
+  "author": "Hiromasa Yano",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/yappynoppy/d3_brushzoom_wheelzoom_enable_pan/issues"
+  },
+  "homepage": "https://github.com/yappynoppy/d3_brushzoom_wheelzoom_enable_pan#readme",
+  "dependencies": {
+    "prettier": "^1.16.4"
+  },
+  "devDependencies": {
+    "husky": "^1.3.1",
+    "lint-staged": "^8.1.5"
+  }
+}
