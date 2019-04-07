@@ -208,7 +208,16 @@ var tipMouseout = function(d) {
 
 function changeScaleExtent(widthExtent, heightExtent) {
   var newExtent = widthExtent > heightExtent ? widthExtent : heightExtent;
-  console.log('w:' + widthExtent + ',h:' + heightExtent + ',e:' + extent);
+  console.log(
+    'w:' +
+      widthExtent +
+      ',h:' +
+      heightExtent +
+      ',new e:' +
+      newExtent +
+      ',cur e' +
+      currentExtent
+  );
 
   zoom = d3
     .zoom()
